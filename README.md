@@ -25,11 +25,35 @@ To implement MESSAGE AUTHENTICATION CODE(MAC)
 5. Security: The security of the MAC relies on the secret key \( K \) and the strength of the hash function \( H \), ensuring that an attacker cannot forge a valid MAC without knowledge of the key.
 
 ## Program:
+```
+import hmac
+import hashlib
+import base64
 
+def compute_hmac(key: bytes, message: bytes) -> str:
+    tag = hmac.new(key, message, digestmod=hashlib.sha256).digest()
+    return base64.b64encode(tag).decode()
+
+def verify_hmac(key: bytes, message: bytes, tag_b64: str) -> bool:
+    expected = base64.b64decode(tag_b64)
+    actual = hmac.new(key, message, digestmod=hashlib.sha256).digest()
+    return hmac.compare_digest(expected, actual)
+
+if __name__ == "__main__":
+    key = input("Enter key (text): ").encode()
+    msg = input("Enter message: ").encode()
+
+    tag = compute_hmac(key, msg)
+    print("\nComputed HMAC (Base64):", tag)
+
+    ok = verify_hmac(key, msg, tag)
+    print("Verification result:", "VALID" if ok else "INVALID")
+
+```
 
 
 ## Output:
-
+<img width="497" height="180" alt="image" src="https://github.com/user-attachments/assets/1b2f6e18-95c1-4f06-8630-1365e73c6723" />
 
 ## Result:
 The program is executed successfully.
